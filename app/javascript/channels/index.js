@@ -21,11 +21,11 @@ class LoginSignup extends React.Component {
     event.preventDefault();
     const { email, username, password, isSignup } = this.state;
     
-    const url = isSignup ? '/api/users' : '/api/sessions'; // Update URLs for login and signup
+    const url = isSignup ? '/api/users' : '/api/sessions'; 
 
     const bodyData = isSignup
-      ? { user: { email, username, password } } // Signup requires email
-      : { user: { username, password } }; // Login only requires username and password
+      ? { user: { email, username, password } }
+      : { user: { username, password } }; 
     
     fetch(url, {
       method: 'POST',
