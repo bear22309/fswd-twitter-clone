@@ -1,6 +1,5 @@
 module Api
   class TweetsController < ApplicationController
-    skip_before_action :verify_authenticity_token
     def index
       @tweets = Tweet.all.order(created_at: :desc)
       render 'api/tweets/index'
