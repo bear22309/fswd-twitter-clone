@@ -1,15 +1,18 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react';
+import { createRoot } from 'react-dom/client'; 
 
 import './home.scss';
 
-const Home = props => (
+const Home = () => (
   <h1>Home page react is working</h1>
-)
+);
 
 document.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(
-    <Home />,
-    document.body.appendChild(document.createElement('div')),
-  )
-})
+  const homeDiv = document.createElement('div'); 
+  document.body.appendChild(homeDiv);
+
+
+  const root = createRoot(homeDiv);
+  root.render(<Home />);
+});
+

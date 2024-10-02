@@ -21,7 +21,7 @@ class LoginSignup extends React.Component {
     event.preventDefault();
     const { email, username, password, isSignup } = this.state;
     
-    const url = isSignup ? '/api/users' : '/api/sessions'; 
+    const url = isSignup ? '/api/users' : '/api/sessions';
 
     const bodyData = isSignup
       ? { user: { email, username, password } }
@@ -36,14 +36,14 @@ class LoginSignup extends React.Component {
       .then(data => {
         if (data.success) {
           alert(isSignup ? 'Signup successful!' : 'Login successful!');
-          window.location.href = '/tweets'; 
+          window.location.href = '/tweets';
         } else {
           alert('Error: ' + data.message);
         }
       })
       .catch(error => console.error('Error:', error));
   };
-  
+
   toggleSignup = () => {
     this.setState(prevState => ({ isSignup: !prevState.isSignup }));
   };
@@ -91,7 +91,7 @@ class TweetFeed extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tweets: [], 
+      tweets: [],
       loading: true,
       error: null,
     };
@@ -116,7 +116,7 @@ class TweetFeed extends React.Component {
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          this.fetchTweets(); 
+          this.fetchTweets();
         } else {
           alert('Error: ' + data.message);
         }
@@ -132,7 +132,7 @@ class TweetFeed extends React.Component {
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          window.location.href = '/'; 
+          window.location.href = '/';
         } else {
           alert('Error: ' + data.message);
         }
@@ -165,13 +165,14 @@ class TweetFeed extends React.Component {
   }
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
-  const appDiv = document.createElement('div');
+  const appDiv = document.getElementById('app') || document.createElement('div');
   appDiv.id = 'app';
-  document.body.appendChild(appDiv);
+  if (!document.getElementById('app')) document.body.appendChild(appDiv);
 
   const renderComponent = window.location.pathname === '/tweets' ? <TweetFeed /> : <LoginSignup />;
-  
+
   const root = createRoot(appDiv);
   root.render(renderComponent);
 });
