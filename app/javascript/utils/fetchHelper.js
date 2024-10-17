@@ -1,4 +1,5 @@
 
+
 export function jsonHeader(options = {}) {
     return Object.assign(options, {
       Accept: 'application/json',
@@ -6,15 +7,17 @@ export function jsonHeader(options = {}) {
     });
   }
   
-  
+ 
   export function getMetaContent(name) {
     const header = document.querySelector(`meta[name="${name}"]`);
     return header && header.content;
   }
   
-  
+ 
   export function getAuthenticityToken() {
-    return getMetaContent('csrf-token');
+    const token = getMetaContent('csrf-token');
+    console.log('CSRF Token:', token); 
+    return token;
   }
   
   
@@ -27,16 +30,22 @@ export function jsonHeader(options = {}) {
   
   
   export function safeCredentials(options = {}) {
-    return Object.assign(options, {
-      credentials: 'include',
-      mode: 'same-origin',
+    const finalOptions = Object.assign(options, {
+      credentials: 'include',  
+      mode: 'same-origin',     
       headers: Object.assign(
         (options.headers || {}),
-        authenticityHeader(),
-        jsonHeader()
+        authenticityHeader(),  
+        jsonHeader()           
       ),
     });
+  
+    
+    console.log('Final fetch options:', finalOptions);  
+  
+    return finalOptions;
   }
+  
   
   
   export function safeCredentialsFormData(options = {}) {
@@ -50,8 +59,16 @@ export function jsonHeader(options = {}) {
   
   export function handleErrors(response) {
     if (!response.ok) {
-      throw Error(response.statusText);
+      console.error(`Error: ${response.status} - ${response.statusText}`);  
+      throw Error(`Error ${response.status}: ${response.statusText}`);
     }
-    return response.json();
+  
+   
+    const contentType = response.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      return response.json(); 
+    } else {
+      return response.text(); 
+    }
   }
   

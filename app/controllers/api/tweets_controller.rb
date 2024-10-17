@@ -8,12 +8,22 @@ module Api
     def create
       token = cookies.signed[:twitter_session_token]
       session = Session.find_by(token: token)
+
+  
+      unless session
+        return render json: { error: 'Unauthorized - no active session' }, status: :unauthorized
+      end
+
       user = session.user
+
+      
       @tweet = user.tweets.new(tweet_params)
 
       if @tweet.save
         TweetMailer.notify(@tweet).deliver!
-        render 'api/tweets/create'
+        render 'api/tweets/create', status: :created
+      else
+        render json: { error: @tweet.errors.full_messages.join(', ') }, status: :unprocessable_entity
       end
     end
 
@@ -21,7 +31,10 @@ module Api
       token = cookies.signed[:twitter_session_token]
       session = Session.find_by(token: token)
 
-      return render json: { success: false } unless session
+      
+      unless session
+        return render json: { success: false, error: 'Unauthorized - no active session' }, status: :unauthorized
+      end
 
       user = session.user
       tweet = Tweet.find_by(id: params[:id])
@@ -32,8 +45,9 @@ module Api
         }
       else
         render json: {
-          success: false
-        }
+          success: false,
+          error: 'Tweet could not be deleted'
+        }, status: :unprocessable_entity
       end
     end
 
@@ -43,6 +57,8 @@ module Api
       if user
         @tweets = user.tweets
         render 'api/tweets/index'
+      else
+        render json: { error: 'User not found' }, status: :not_found
       end
     end
 
